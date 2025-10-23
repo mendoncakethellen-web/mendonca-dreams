@@ -1,10 +1,10 @@
 import js from "@eslint/js";
-import globals from "globals";
-import react from "eslint-plugin-react";
-import reactHooks from "eslint-plugin-react-hooks";
 import nextPlugin from "@next/eslint-plugin-next";
 import tseslint from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
+import react from "eslint-plugin-react";
+import reactHooks from "eslint-plugin-react-hooks";
+import globals from "globals";
 
 export default [
   {
@@ -44,7 +44,7 @@ export default [
       ],
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/triple-slash-reference": "off",
-      "@next/next/no-img-element": "off",
+      "@next/next/no-image-element": "off",
       "react/prop-types": "off",
       "no-console": "off",
     },
