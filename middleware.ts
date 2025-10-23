@@ -1,10 +1,9 @@
-import { updateSession } from "@/lib/middleware"
-import type { NextRequest } from "next/server"
+import { updateSession } from "./lib/middleware";
 
-export async function middleware(request: NextRequest) {
-  return await updateSession(request)
-}
+// Força o ambiente Node.js para compatibilidade com o Supabase SSR
+export const runtime = "nodejs";
 
-export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"],
+// O Next.js executa esta função automaticamente em cada requisição
+export async function middleware(request: Request) {
+  return updateSession(request as any);
 }
