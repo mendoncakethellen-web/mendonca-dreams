@@ -1,25 +1,37 @@
-"use client"
+"use client";
 
-import { Instagram, Facebook, Twitter } from "lucide-react"
-import Link from "next/link"
+import { Facebook, Instagram, Twitter } from "lucide-react";
+import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="py-16 px-4 sm:px-6 lg:px-8" style={{ background: "#001F3F", color: "#ffffff" }}>
+    <footer
+      className="py-16 px-4 sm:px-6 lg:px-8"
+      style={{ background: "#001F3F", color: "#ffffff" }}
+    >
       <div className="max-w-7xl mx-auto">
         <div className="grid md:grid-cols-4 gap-8 mb-12">
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: "#D4AF37" }}>
-                <span className="text-foreground font-bold text-sm" style={{ color: "#001F3F" }}>
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center"
+                style={{ background: "#D4AF37" }}
+              >
+                <span
+                  className="text-foreground font-bold text-sm"
+                  style={{ color: "#001F3F" }}
+                >
                   MD
                 </span>
               </div>
-              <span className="font-serif text-lg font-semibold">Mendonça Dreams</span>
+              <span className="font-serif text-lg font-semibold">
+                Mendonça Dreams
+              </span>
             </div>
             <p className="text-white/70 text-sm">
-              Exclusividade e elegância para mulheres profissionais que entendem a importância da qualidade.
+              Exclusividade e elegância para mulheres profissionais que entendem
+              a importância da qualidade.
             </p>
           </div>
 
@@ -33,12 +45,18 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="#about" className="hover:text-white transition-colors">
+                <Link
+                  href="#about"
+                  className="hover:text-white transition-colors"
+                >
                   Sobre
                 </Link>
               </li>
               <li>
-                <Link href="#newsletter" className="hover:text-white transition-colors">
+                <Link
+                  href="#newsletter"
+                  className="hover:text-white transition-colors"
+                >
                   Contato
                 </Link>
               </li>
@@ -101,7 +119,10 @@ export default function Footer() {
         </div>
 
         {/* Divider */}
-        <div className="border-t pt-8" style={{ borderColor: "rgba(255,255,255,0.2)" }}>
+        <div
+          className="border-t pt-8"
+          style={{ borderColor: "rgba(255,255,255,0.2)" }}
+        >
           <div className="flex flex-col md:flex-row justify-between items-center text-sm text-white/70">
             <p>&copy; 2025 Mendonça Dreams. Todos os direitos reservados.</p>
             <p>Desenvolvido com elegância e sofisticação</p>
@@ -109,5 +130,5 @@ export default function Footer() {
         </div>
       </div>
     </footer>
-  )
+  );
 }

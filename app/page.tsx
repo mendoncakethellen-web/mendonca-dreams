@@ -1,9 +1,9 @@
-import Header from "@/components/header"
-import Hero from "@/components/hero"
-import Products from "@/components/products"
-import About from "@/components/about"
-import Newsletter from "@/components/newsletter"
-import Footer from "@/components/footer"
+import About from "@/components/about";
+import Footer from "@/components/footer";
+import Header from "@/components/header";
+import Hero from "@/components/hero";
+import Newsletter from "@/components/newsletter";
+import Products from "@/components/products";
 
 export default function Home() {
   return (
@@ -15,5 +15,5 @@ export default function Home() {
       <Newsletter />
       <Footer />
     </main>
-  )
+  );
 }

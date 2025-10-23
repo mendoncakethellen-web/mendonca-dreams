@@ -121,3 +121,7 @@
     @apply bg-background text-foreground;
   }
 }
+/* === GRADIENTE HERO MENDONÇA DREAMS === */
+.hero-gradient {
+  background: linear-gradient(135deg, #001f3f 0%, #8b6f47 100%) !important;
+}
