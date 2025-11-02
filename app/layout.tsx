@@ -1,5 +1,3 @@
-"use client";
-
 import PageTransition from "@/components/PageTransition";
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
