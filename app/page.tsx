@@ -1,3 +1,5 @@
+"use client"; // Torna a página inteira cliente-side para evitar hidratação SSR
+
 import About from "@/components/about";
 import Footer from "@/components/footer";
 import Header from "@/components/header";

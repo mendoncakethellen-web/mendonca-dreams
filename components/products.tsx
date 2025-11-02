@@ -3,11 +3,20 @@
 import { createClient } from "@/lib/client";
 import { Heart, ShoppingBag } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link"; // Adicione esta importação
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+type Product = {
+  id: string;
+  name: string;
+  price: number;
+  category: string;
+  image_url: string;
+};
+
 export default function Products() {
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [user, setUser] = useState<any>(null);
   const router = useRouter();
@@ -16,14 +25,15 @@ export default function Products() {
     const loadData = async () => {
       const supabase = createClient();
 
-      // Get user
+      // Busca usuário logado
       const {
         data: { user },
       } = await supabase.auth.getUser();
       setUser(user);
 
-      // Get products
-      const { data } = await supabase.from("products").select("*");
+      // Busca produtos
+      const { data, error } = await supabase.from("products").select("*");
+      if (error) console.error("Erro ao carregar produtos:", error);
       setProducts(data || []);
     };
 
@@ -43,6 +53,7 @@ export default function Products() {
     }
 
     const supabase = createClient();
+
     const { data: existingItem } = await supabase
       .from("cart_items")
       .select("*")
@@ -63,7 +74,7 @@ export default function Products() {
       });
     }
 
-    alert("Produto adicionado ao carrinho!");
+    console.log("Produto adicionado ao carrinho!");
   };
 
   return (
@@ -73,7 +84,7 @@ export default function Products() {
       style={{ background: "#f5f5f5" }}
     >
       <div className="max-w-7xl mx-auto">
-        {/* Section Header */}
+        {/* === HEADER === */}
         <div className="text-center mb-16 space-y-4">
           <p
             className="text-sm font-semibold tracking-widest uppercase"
@@ -93,24 +104,24 @@ export default function Products() {
           </p>
         </div>
 
-        {/* Products Grid */}
+        {/* === GRID DE PRODUTOS === */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {products.map((product) => (
             <div key={product.id} className="group">
-              {/* Product Image */}
+              {/* === IMAGEM DO PRODUTO === */}
               <div className="relative mb-4 rounded-lg overflow-hidden bg-white aspect-square">
                 <Image
                   src={product.image_url || "/placeholder.svg"}
                   alt={product.name || "Produto Mendonça Dreams"}
                   width={400}
                   height={400}
-                  quality={90}
-                  loading="lazy"
-                  sizes="(max-width: 768px) 100vw, 400px"
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  unoptimized
+                  loader={({ src }) => src}
+                  className="object-cover w-full h-full"
+                  suppressHydrationWarning={true}
                 />
 
-                {/* Badge */}
+                {/* CATEGORIA */}
                 <div
                   className="absolute top-4 left-4 text-white px-3 py-1 rounded-full text-xs font-semibold"
                   style={{ background: "#001F3F" }}
@@ -118,7 +129,7 @@ export default function Products() {
                   {product.category}
                 </div>
 
-                {/* Favorite Button */}
+                {/* FAVORITOS */}
                 <button
                   onClick={() => toggleFavorite(product.id)}
                   aria-label={`${
@@ -137,7 +148,7 @@ export default function Products() {
                   />
                 </button>
 
-                {/* Add to Cart Button */}
+                {/* CARRINHO */}
                 <button
                   onClick={() => addToCart(product.id)}
                   aria-label={`Adicionar ${product.name} ao carrinho`}
@@ -149,20 +160,28 @@ export default function Products() {
                 </button>
               </div>
 
-              {/* Product Info */}
+              {/* === INFORMAÇÕES === */}
               <div className="space-y-2">
-                <h3 className="font-medium" style={{ color: "#001F3F" }}>
-                  {product.name}
-                </h3>
+                <Link
+                  href={`/products/${product.id}`}
+                  aria-label={`Ver detalhes de ${product.name}`}
+                >
+                  <h3
+                    className="font-medium hover:underline cursor-pointer"
+                    style={{ color: "#001F3F" }}
+                  >
+                    {product.name}
+                  </h3>
+                </Link>
                 <p className="font-semibold" style={{ color: "#8B6F47" }}>
-                  R$ {Number.parseFloat(product.price).toFixed(2)}
+                  R$ {product.price.toFixed(2)}
                 </p>
               </div>
             </div>
           ))}
         </div>
 
-        {/* View All Button */}
+        {/* === BOTÃO FINAL === */}
         <div className="text-center mt-12">
           <button
             className="px-8 py-3 border rounded-lg hover:opacity-80 transition-opacity font-medium"

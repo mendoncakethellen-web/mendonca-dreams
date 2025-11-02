@@ -17,10 +17,9 @@ export default function About() {
             alt="Equipe Mendonça Dreams e sua trajetória de elegância"
             width={800}
             height={600}
-            quality={90}
-            loading="lazy"
-            sizes="(max-width: 768px) 100vw, 800px"
-            className="w-full h-full object-cover object-center"
+            quality={75} // ✅ define qualidade estável no SSR e cliente
+            priority // ✅ pré-carrega a imagem principal
+            className="w-full h-full object-cover object-center rounded-2xl"
           />
         </div>
 
@@ -40,19 +39,12 @@ export default function About() {
 
           <div className="space-y-4 text-white/80 leading-relaxed">
             <p>
-              Fundada com a visão de trazer exclusividade e elegância para
-              mulheres profissionais que entendem a importância da qualidade, a
-              Mendonça Dreams é mais que uma marca de moda.
+              A Mendonça Dreams nasceu do desejo de inspirar mulheres a
+              acreditarem no próprio potencial. Nossas peças foram pensadas para
+              transmitir poder e sofisticação em cada detalhe, para mulheres que
+              não esperam o futuro acontecer elas o constroem.
             </p>
-            <p>
-              Cada peça é cuidadosamente selecionada, considerando não apenas o
-              design sofisticado, mas também a qualidade dos materiais e o
-              conforto que proporcionam para o dia a dia profissional.
-            </p>
-            <p>
-              Acreditamos que a moda verdadeira é atemporal, sofisticada e
-              reflete a personalidade e profissionalismo de quem a veste.
-            </p>
+            <p>Vista-se com propósito. Vista-se de Mendonça Dreams.</p>
           </div>
         </div>
       </div>

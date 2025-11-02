@@ -1,27 +1,39 @@
-// next.config.js
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
   reactStrictMode: true,
-  compress: true, // gzip automático
-  poweredByHeader: false, // remove cabeçalho inseguro
+  compress: true,
+  poweredByHeader: false,
+
   images: {
-    formats: ["image/avif", "image/webp"], // formatos leves
-    minimumCacheTTL: 60, // cache de 1 min
+    formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 60,
+
+    // Configuração dinâmica com fallback para o hostname do Supabase
+    remotePatterns: process.env.NEXT_PUBLIC_SUPABASE_URL
+      ? [
+          {
+            protocol: "https",
+            hostname: new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname,
+            pathname: "/storage/v1/object/public/**",
+          },
+        ]
+      : [
+          // Fallback direto (remova após confirmar que a env var funciona)
+          {
+            protocol: "https",
+            hostname: "ackwpgvkqlcaxqqqrqkt.supabase.co",
+            pathname: "/storage/v1/object/public/**",
+          },
+        ],
+
+    unoptimized: false,
   },
+
   experimental: {
     optimizeCss: true,
     optimizePackageImports: ["lucide-react", "framer-motion"],
   },
-  headers: async () => [
-    {
-      source: "/(.*)",
-      headers: [
-        { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
-        { key: "X-Frame-Options", value: "DENY" },
-        { key: "X-Content-Type-Options", value: "nosniff" },
-      ],
-    },
-  ],
 };
 
 export default nextConfig;

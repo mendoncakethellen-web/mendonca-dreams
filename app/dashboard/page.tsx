@@ -1,44 +1,52 @@
-"use client"
+"use client";
 
-import { createClient } from "@/lib/client"
-import { useEffect, useState } from "react"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { LogOut, ShoppingBag, User, Package } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import { createClient } from "@/lib/client";
+import { LogOut, Package, ShoppingBag, User } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function DashboardPage() {
-  const [user, setUser] = useState<any>(null)
-  const [profile, setProfile] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
-  const router = useRouter()
+  const [user, setUser] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const loadData = async () => {
-      const supabase = createClient()
+      const supabase = createClient();
       const {
         data: { user },
-      } = await supabase.auth.getUser()
+      } = await supabase.auth.getUser();
 
       if (user) {
-        setUser(user)
-        const { data } = await supabase.from("profiles").select("*").eq("id", user.id).single()
-        setProfile(data)
+        setUser(user);
+        const { data } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", user.id)
+          .single();
+        setProfile(data);
       }
-      setLoading(false)
-    }
+      setLoading(false);
+    };
 
-    loadData()
-  }, [])
+    loadData();
+  }, []);
 
   const handleLogout = async () => {
-    const supabase = createClient()
-    await supabase.auth.signOut()
-    router.push("/")
-  }
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push("/");
+  };
 
   if (loading) {
-    return <div className="flex items-center justify-center min-h-screen">Carregando...</div>
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        Carregando...
+      </div>
+    );
   }
 
   return (
@@ -47,7 +55,10 @@ export default function DashboardPage() {
         {/* Header */}
         <div className="flex justify-between items-center mb-12">
           <div>
-            <h1 className="text-4xl font-serif font-light" style={{ color: "#001F3F" }}>
+            <h1
+              className="text-4xl font-serif font-light"
+              style={{ color: "#001F3F" }}
+            >
               Bem-vinda, {profile?.full_name || user?.email}!
             </h1>
             <p className="text-gray-600 mt-2">Gerencie sua conta e pedidos</p>
@@ -71,10 +82,16 @@ export default function DashboardPage() {
               style={{ borderColor: "#e5e5e5" }}
             >
               <div className="flex items-center gap-4 mb-4">
-                <div className="p-3 rounded-lg" style={{ background: "#001F3F" }}>
+                <div
+                  className="p-3 rounded-lg"
+                  style={{ background: "#001F3F" }}
+                >
                   <User className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold" style={{ color: "#001F3F" }}>
+                <h3
+                  className="text-xl font-semibold"
+                  style={{ color: "#001F3F" }}
+                >
                   Meu Perfil
                 </h3>
               </div>
@@ -89,10 +106,16 @@ export default function DashboardPage() {
               style={{ borderColor: "#e5e5e5" }}
             >
               <div className="flex items-center gap-4 mb-4">
-                <div className="p-3 rounded-lg" style={{ background: "#8B6F47" }}>
+                <div
+                  className="p-3 rounded-lg"
+                  style={{ background: "#8B6F47" }}
+                >
                   <ShoppingBag className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold" style={{ color: "#001F3F" }}>
+                <h3
+                  className="text-xl font-semibold"
+                  style={{ color: "#001F3F" }}
+                >
                   Carrinho
                 </h3>
               </div>
@@ -107,10 +130,16 @@ export default function DashboardPage() {
               style={{ borderColor: "#e5e5e5" }}
             >
               <div className="flex items-center gap-4 mb-4">
-                <div className="p-3 rounded-lg" style={{ background: "#D4AF37" }}>
+                <div
+                  className="p-3 rounded-lg"
+                  style={{ background: "#D4AF37" }}
+                >
                   <Package className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold" style={{ color: "#001F3F" }}>
+                <h3
+                  className="text-xl font-semibold"
+                  style={{ color: "#001F3F" }}
+                >
                   Meus Pedidos
                 </h3>
               </div>
@@ -120,8 +149,14 @@ export default function DashboardPage() {
         </div>
 
         {/* Continue Shopping */}
-        <div className="bg-white rounded-lg p-8 border text-center" style={{ borderColor: "#e5e5e5" }}>
-          <h3 className="text-xl font-semibold mb-4" style={{ color: "#001F3F" }}>
+        <div
+          className="bg-white rounded-lg p-8 border text-center"
+          style={{ borderColor: "#e5e5e5" }}
+        >
+          <h3
+            className="text-xl font-semibold mb-4"
+            style={{ color: "#001F3F" }}
+          >
             Continuar Comprando
           </h3>
           <Link href="/">
@@ -132,5 +167,5 @@ export default function DashboardPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
