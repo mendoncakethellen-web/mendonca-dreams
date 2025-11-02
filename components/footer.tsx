@@ -46,7 +46,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#about"
+                  href="/#about"
                   className="hover:text-white transition-colors"
                 >
                   Sobre
@@ -54,14 +54,17 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#newsletter"
+                  href="/#newsletter"
                   className="hover:text-white transition-colors"
                 >
                   Contato
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-white transition-colors">
+                <Link
+                  href="/blog"
+                  className="hover:text-white transition-colors"
+                >
                   Blog
                 </Link>
               </li>
