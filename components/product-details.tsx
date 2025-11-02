@@ -67,7 +67,7 @@ export default function ProductDetails({ productId }: { productId: string }) {
     const supabase = createClient();
     const { data } = await supabase
       .from("reviews")
-      .select("*") // <-- Sem relação profiles
+      .select("*")
       .eq("product_id", productId)
       .order("created_at", { ascending: false });
 
@@ -97,7 +97,11 @@ export default function ProductDetails({ productId }: { productId: string }) {
       quantity: 1,
     });
 
-    error ? alert("Erro ao adicionar!") : alert("Adicionado ao carrinho!");
+    if (error) {
+      alert("Erro ao adicionar!");
+    } else {
+      alert("Adicionado ao carrinho!");
+    }
   };
 
   // === ENVIAR AVALIAÇÃO ===
@@ -159,6 +163,7 @@ export default function ProductDetails({ productId }: { productId: string }) {
     await reloadReviews();
   };
 
+  // === RENDERIZAÇÃO ===
   if (!product) return <div className="text-center py-20">Carregando...</div>;
 
   return (
