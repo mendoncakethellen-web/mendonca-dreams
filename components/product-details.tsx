@@ -6,6 +6,12 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+type ColorOption = {
+  nome: string;
+  codigo: string;
+  imagem: string;
+};
+
 type Product = {
   id: string;
   name: string;
@@ -13,8 +19,9 @@ type Product = {
   category: string;
   image_url: string;
   description: string;
-  colors: string[] | null;
+  colors: ColorOption[] | null;
   sizes: string[] | null;
+  images?: string[] | null; // 👈 NOVO campo para várias imagens
 };
 
 type Review = {
@@ -28,8 +35,8 @@ type Review = {
 export default function ProductDetails({ productId }: { productId: string }) {
   const [product, setProduct] = useState<Product | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [selectedColor, setSelectedColor] = useState("");
-  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedColor, setSelectedColor] = useState<string>("");
+  const [selectedSize, setSelectedSize] = useState<string>("");
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [user, setUser] = useState<any>(null);
@@ -38,7 +45,20 @@ export default function ProductDetails({ productId }: { productId: string }) {
   const [editComment, setEditComment] = useState("");
   const [avgRating, setAvgRating] = useState<number>(0);
   const [totalReviews, setTotalReviews] = useState<number>(0);
+  const [currentIndex, setCurrentIndex] = useState(0); // 👈 índice atual da imagem no carrossel
   const router = useRouter();
+
+  // === SLIDER AUTOMÁTICO ===
+  useEffect(() => {
+    if (product?.images && product.images.length > 1) {
+      const interval = setInterval(() => {
+        setCurrentIndex((prev) =>
+          prev === product.images!.length - 1 ? 0 : prev + 1
+        );
+      }, 5000); // troca a cada 4 segundos
+      return () => clearInterval(interval);
+    }
+  }, [product]);
 
   // === CARREGAR PRODUTO E AVALIAÇÕES ===
   useEffect(() => {
@@ -163,21 +183,78 @@ export default function ProductDetails({ productId }: { productId: string }) {
     await reloadReviews();
   };
 
-  // === RENDERIZAÇÃO ===
   if (!product) return <div className="text-center py-20">Carregando...</div>;
 
   return (
     <section className="py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12">
-        {/* === IMAGEM === */}
-        <div className="relative h-96 rounded-lg overflow-hidden">
-          <Image
-            src={product.image_url}
-            alt={product.name}
-            width={600}
-            height={600}
-            className="object-cover w-full h-full"
-          />
+        {/* === GALERIA DE IMAGENS COM SETAS + MINIATURAS === */}
+        <div className="relative space-y-4">
+          {/* Imagem principal */}
+          <div className="relative h-96 rounded-lg overflow-hidden">
+            <Image
+              src={
+                selectedColor ||
+                product.images?.[currentIndex] ||
+                product.image_url
+              }
+              alt={product.name}
+              width={600}
+              height={600}
+              className="object-cover w-full h-full transition-all duration-500"
+            />
+
+            {/* Setas laterais */}
+            {product.images && product.images.length > 1 && (
+              <>
+                <button
+                  onClick={() =>
+                    setCurrentIndex((prev) =>
+                      prev === 0 ? product.images!.length - 1 : prev - 1
+                    )
+                  }
+                  className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/40 text-white p-2 rounded-full hover:bg-black/70 transition"
+                >
+                  ❮
+                </button>
+                <button
+                  onClick={() =>
+                    setCurrentIndex((prev) =>
+                      prev === product.images!.length - 1 ? 0 : prev + 1
+                    )
+                  }
+                  className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/40 text-white p-2 rounded-full hover:bg-black/70 transition"
+                >
+                  ❯
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* Miniaturas */}
+          {product.images && product.images.length > 0 && (
+            <div className="flex gap-3 justify-center">
+              {product.images.map((img, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentIndex(i)}
+                  className={`w-20 h-20 border rounded-md overflow-hidden transition-all ${
+                    currentIndex === i
+                      ? "border-[#D4AF37] scale-105"
+                      : "border-gray-300 hover:border-[#D4AF37]/60"
+                  }`}
+                >
+                  <Image
+                    src={img}
+                    alt={`Imagem ${i + 1}`}
+                    width={150}
+                    height={150}
+                    className="object-cover w-full h-full"
+                  />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* === DETALHES === */}
@@ -216,24 +293,26 @@ export default function ProductDetails({ productId }: { productId: string }) {
           </p>
 
           {/* === CORES === */}
-          <div>
-            <h3 className="font-medium">Cores:</h3>
-            <div className="flex gap-2 mt-2">
-              {(product.colors ?? []).map((color) => (
-                <button
-                  key={color}
-                  onClick={() => setSelectedColor(color)}
-                  className={`px-4 py-2 border rounded ${
-                    selectedColor === color
-                      ? "border-black bg-gray-100"
-                      : "border-gray-300"
-                  }`}
-                >
-                  {color}
-                </button>
-              ))}
+          {product.colors && product.colors.length > 0 && (
+            <div>
+              <h3 className="font-medium">Cores:</h3>
+              <div className="flex gap-3 mt-3">
+                {product.colors.map((cor) => (
+                  <button
+                    key={cor.nome}
+                    onClick={() => setSelectedColor(cor.imagem)}
+                    className={`w-9 h-9 rounded-full border-2 transition-all ${
+                      selectedColor === cor.imagem
+                        ? "border-[#D4AF37] scale-110"
+                        : "border-gray-300"
+                    }`}
+                    style={{ backgroundColor: cor.codigo }}
+                    title={cor.nome}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* === TAMANHOS === */}
           <div>
@@ -245,7 +324,7 @@ export default function ProductDetails({ productId }: { productId: string }) {
                   onClick={() => setSelectedSize(size)}
                   className={`px-4 py-2 border rounded ${
                     selectedSize === size
-                      ? "border-black bg-gray-100"
+                      ? "border-[#D4AF37] bg-[#fff8e1]"
                       : "border-gray-300"
                   }`}
                 >

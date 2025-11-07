@@ -1,4 +1,3 @@
-import PageTransition from "@/components/PageTransition";
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
@@ -27,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <body className={`font-sans antialiased ${_playfair.variable}`}>
-        <PageTransition>{children}</PageTransition>
+        {children}
         <Analytics />
       </body>
     </html>
