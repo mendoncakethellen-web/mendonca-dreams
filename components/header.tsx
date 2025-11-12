@@ -20,15 +20,27 @@ export default function Header() {
     checkUser();
   }, []);
 
+  // trava o scroll quando o menu está aberto
+  useEffect(() => {
+    document.documentElement.style.overflow = isOpen ? "hidden" : "";
+    return () => {
+      document.documentElement.style.overflow = "";
+    };
+  }, [isOpen]);
+
   return (
     <header
-      className="fixed top-0 w-full z-50 border-b"
-      style={{ background: "white", borderColor: "#001F3F" }}
+      className="fixed top-0 w-full z-50 border-b bg-white/90 backdrop-blur"
+      style={{ borderColor: "#001F3F" }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
+          <Link
+            href="/"
+            className="flex items-center gap-2"
+            aria-label="Ir para a página inicial"
+          >
             <div
               className="w-8 h-8 rounded-full flex items-center justify-center"
               style={{ background: "#001F3F" }}
@@ -44,40 +56,41 @@ export default function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex gap-8">
-            <Link
-              href="/"
-              className="text-sm hover:opacity-70 transition-opacity"
-              style={{ color: "#001F3F" }}
-            >
-              Coleção
-            </Link>
-            <Link
-              href="#about"
-              className="text-sm hover:opacity-70 transition-opacity"
-              style={{ color: "#001F3F" }}
-            >
-              Sobre
-            </Link>
-            <Link
-              href="#newsletter"
-              className="text-sm hover:opacity-70 transition-opacity"
-              style={{ color: "#001F3F" }}
-            >
-              Contato
-            </Link>
+          <nav
+            className="hidden md:flex gap-8"
+            aria-label="Navegação principal"
+          >
+            {[
+              { href: "/", label: "Coleção" },
+              { href: "/#about", label: "Sobre" },
+              { href: "/#newsletter", label: "Contato" },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-sm hover:opacity-70 transition-opacity"
+                style={{ color: "#001F3F" }}
+              >
+                {item.label}
+              </Link>
+            ))}
           </nav>
 
           {/* Right Icons */}
-          <div className="flex items-center gap-4">
-            <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+          <div className="flex items-center gap-3">
+            <button
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              aria-label="Pesquisar"
+            >
               <Search className="w-5 h-5" style={{ color: "#001F3F" }} />
             </button>
+
             {user ? (
               <>
                 <Link
                   href="/dashboard/cart"
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors relative"
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  aria-label="Abrir carrinho"
                 >
                   <ShoppingBag
                     className="w-5 h-5"
@@ -101,9 +114,13 @@ export default function Header() {
                 Entrar
               </Link>
             )}
+
             <button
               className="md:hidden p-2"
-              onClick={() => setIsOpen(!isOpen)}
+              onClick={() => setIsOpen((v) => !v)}
+              aria-expanded={isOpen}
+              aria-controls="mobile-nav"
+              aria-label={isOpen ? "Fechar menu" : "Abrir menu"}
             >
               {isOpen ? (
                 <X className="w-5 h-5" style={{ color: "#001F3F" }} />
@@ -116,19 +133,30 @@ export default function Header() {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <nav className="md:hidden pb-4 flex flex-col gap-3">
-            <Link href="/" className="text-sm" style={{ color: "#001F3F" }}>
+          <nav
+            id="mobile-nav"
+            className="md:hidden pb-4 flex flex-col gap-3"
+            aria-label="Navegação mobile"
+          >
+            <Link
+              onClick={() => setIsOpen(false)}
+              href="/"
+              className="text-sm"
+              style={{ color: "#001F3F" }}
+            >
               Coleção
             </Link>
             <Link
-              href="#about"
+              onClick={() => setIsOpen(false)}
+              href="/#about"
               className="text-sm"
               style={{ color: "#001F3F" }}
             >
               Sobre
             </Link>
             <Link
-              href="#newsletter"
+              onClick={() => setIsOpen(false)}
+              href="/#newsletter"
               className="text-sm"
               style={{ color: "#001F3F" }}
             >

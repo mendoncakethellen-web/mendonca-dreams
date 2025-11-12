@@ -7,12 +7,22 @@ import Link from "next/link"; // Adicione esta importação
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+// Extend the Product type to include optional color variants. Each color
+// has a name (nome), a hex code (codigo) and an image URL (imagem).
+// These fields allow the product grid to display swatches when available.
+type ColorOption = {
+  nome: string;
+  codigo: string;
+  imagem: string;
+};
+
 type Product = {
   id: string;
   name: string;
   price: number;
   category: string;
   image_url: string;
+  colors?: ColorOption[] | null;
 };
 
 export default function Products() {
@@ -31,10 +41,12 @@ export default function Products() {
       } = await supabase.auth.getUser();
       setUser(user);
 
-      // Busca produtos
+      // Busca produtos. Inclua as cores (se disponíveis) para exibir os botões de cor
+      // no grid. Caso o campo "colors" não exista ou não esteja configurado,
+      // o Supabase retornará null e os swatches não serão exibidos.
       const { data, error } = await supabase.from("products").select("*");
       if (error) console.error("Erro ao carregar produtos:", error);
-      setProducts(data || []);
+      setProducts((data as any) || []);
     };
 
     loadData();
@@ -113,11 +125,9 @@ export default function Products() {
                 <Image
                   src={product.image_url || "/placeholder.svg"}
                   alt={product.name || "Produto Mendonça Dreams"}
-                  width={400}
-                  height={400}
-                  unoptimized
-                  loader={({ src }) => src}
-                  className="object-cover w-full h-full"
+                  fill
+                  sizes="(max-width: 1024px) 50vw, 25vw"
+                  className="object-cover"
                   suppressHydrationWarning={true}
                 />
 
@@ -176,6 +186,26 @@ export default function Products() {
                 <p className="font-semibold" style={{ color: "#8B6F47" }}>
                   R$ {product.price.toFixed(2)}
                 </p>
+
+                {/* Mostra swatches de cores, se disponíveis */}
+                {product.colors && product.colors.length > 0 && (
+                  <div className="flex gap-1 pt-1" aria-label="Opções de cores">
+                    {product.colors.map((cor) => (
+                      <span
+                        key={cor.nome}
+                        className="w-4 h-4 rounded-full border"
+                        style={{
+                          backgroundColor: cor.codigo,
+                          borderColor:
+                            cor.codigo === "#ffffff"
+                              ? "#e5e5e5"
+                              : "transparent",
+                        }}
+                        title={cor.nome}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           ))}
